@@ -1,0 +1,14 @@
+SELECT
+	trips.trip_id,
+	trips.duration,
+	weather.events
+FROM
+	trips
+JOIN
+	weather
+ON
+	trips.zip_code = weather.zip
+WHERE
+	events = 'Rain'
+ORDER BY
+	duration DESC;
