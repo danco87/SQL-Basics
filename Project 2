@@ -1,0 +1,8 @@
+SELECT 
+	neighbourhood,
+	COUNT(neighbourhood) AS how_many
+FROM 
+	sfo_listings
+GROUP BY 1
+ORDER BY how_many DESC
+LIMIT 5;
