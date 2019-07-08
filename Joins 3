@@ -1,0 +1,22 @@
+WITH
+	number_of_trips
+AS (
+	SELECT
+		start_station,
+		MAX(start_terminal) AS start_terminal,
+		COUNT(start_station) AS number_of_trips
+	FROM trips
+	GROUP BY 1
+	)
+SELECT
+	n.start_station,
+	n.number_of_trips,
+	n.start_terminal,
+	s.dockcount
+FROM 
+	number_of_trips n
+JOIN
+	stations s
+ON
+	n.start_terminal = s.station_id
+ORDER BY dockcount DESC;
