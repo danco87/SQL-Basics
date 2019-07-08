@@ -1,18 +1,21 @@
 WITH
-	count_months
+	months
 AS(
 	SELECT
 		calender_date,
-		COUNT(EXTRACT(month FROM calender_date)) AS month_t
+		EXTRACT(month FROM calender_date) AS month_a
 	FROM
 		sfo_calendar
-	GROUP BY 1
+	WHERE
+		available = 't'
 	)
 SELECT
-	sfo_listings.price
-	MAX(count_months.month_t)
+	month_a,
+	COUNT(month_a) as month_t
 FROM
-	count_months
-JOIN
-	sfo_listings
-ON
+	months
+GROUP BY 1
+ORDER BY month_a ASC
+LIMIT 12;
+
+### This has the total available listings for every month. Now I just need to include a column for avg price for each month
