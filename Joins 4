@@ -1,0 +1,17 @@
+SELECT
+	trips.zip_code,
+	weather.events,
+	MAX(trips.duration) as duration
+	
+FROM
+	trips
+JOIN
+	weather
+ON
+	trips.zip_code = weather.zip
+WHERE
+	events = 'Rain'
+GROUP BY
+	1,2
+ORDER BY
+	duration DESC;
