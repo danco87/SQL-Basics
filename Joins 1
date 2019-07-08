@@ -1,7 +1,8 @@
 SELECT
 	trips.trip_id,
-	trips.duration,
-	weather.events
+	weather.events,
+	MAX(trips.duration) as duration
+	
 FROM
 	trips
 JOIN
@@ -10,5 +11,8 @@ ON
 	trips.zip_code = weather.zip
 WHERE
 	events = 'Rain'
+GROUP BY
+	1,2
 ORDER BY
-	duration DESC;
+	duration DESC
+LIMIT 3;
