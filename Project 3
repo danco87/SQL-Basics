@@ -1,3 +1,4 @@
+### This has the total available listings for every month. Now I just need to include a column for avg price for each month
 WITH
 	months
 AS(
@@ -17,4 +18,82 @@ FROM
 GROUP BY 1
 ORDER BY month_num ASC;
 
-### This has the total available listings for every month. Now I just need to include a column for avg price for each month
+
+
+### This next part has the average price next to the number of month
+WITH
+	cost_
+AS(
+	SELECT
+		CAST(replace(replace(price,',',''),'$','') AS float) as price,
+		EXTRACT(month FROM calender_date) AS month_num
+	FROM
+		sfo_calendar
+	WHERE
+		available = 't'
+	)
+SELECT
+	month_num,
+	AVG(price) as avg_price
+FROM 
+	cost_
+GROUP BY 1
+ORDER BY month_num ASC;
+
+### I attempted to do nested CTEs, didn't work:
+WITH
+	avail_listings_t
+AS(
+	WITH
+		months
+	AS(
+		SELECT
+			calender_date,
+			EXTRACT(month FROM calender_date) AS month_num
+		FROM
+			sfo_calendar
+		WHERE
+			available = 't'
+		)
+	SELECT
+		month_num,
+		COUNT(month_num) as listing_totals
+	FROM
+		months
+	GROUP BY 1
+	ORDER BY month_num ASC
+	)
+WITH
+	avg_cost_t
+AS(
+	WITH
+		cost_
+	AS(
+		SELECT
+			CAST(replace(replace(price,',',''),'$','') AS float) as price,
+			EXTRACT(month FROM calender_date) AS month_num
+		FROM
+			sfo_calendar
+		WHERE
+			available = 't'
+		)
+	SELECT
+		month_num,
+		AVG(price) as avg_price
+	FROM 
+		cost_
+	GROUP BY 1
+	ORDER BY month_num ASC
+	)
+SELECT
+	listings.month_num,
+	listings.listings_totals,
+	costs.avg_price
+FROM
+	avail_listings_t listings
+JOIN
+	avg_cost_t costs
+ON
+	listings.month_num = costs.month_num
+
+	
